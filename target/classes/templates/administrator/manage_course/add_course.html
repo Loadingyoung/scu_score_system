@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="common/new::new-head(${'添加课程'})"></div>
+<body>
+
+<!-- navbar -->
+<div th:replace="common/admin-bar::topbar"></div>
+<!-- end navbar -->
+
+<!-- sidebar -->
+<div th:replace="common/admin-bar::sidebar(activeUrl='manage-course')"></div>
+<!-- end sidebar -->
+
+
+<!-- main container -->
+<div class="content">
+    <div class="container-fluid">
+        <div id="pad-wrapper" class="new-user">
+
+            <div class="row-fluid header">
+                <h3>添加课程</h3>
+            </div>
+
+            <div class="row-fluid form-wrapper">
+                <!-- left column -->
+                <div class="span8">
+                    <div class="container">
+                        <form class="new_user_form inline-input" th:action="@{/admin/manage-course/add}" method="post">
+                        <div class="span8 field-box">
+                            <label>开课学院：</label>
+                            <div class="ui-select span5">
+                                <select name="courseDept">
+                                    <option />==请选择学院==
+                                    <option th:each="dept:${depts}" th:text="${dept.getDept()}" th:value="${dept.getDept()}"/>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="span8 field-box">
+                            <label>课程号：</label>
+                            <input name="courseId" class="span5" type="text" />
+                        </div>
+                        <div class="span8 field-box">
+                            <label>课程名：</label>
+                            <input name="courseName" class="span5" type="text" />
+                        </div>
+                        <div class="span8 field-box">
+                            <label>课程类别：</label>
+                            <div class="ui-select span5">
+                                <select name="courseType" >
+                                    <option/>==请选择课程类别==
+                                    <option/>必修
+                                    <option/>选修
+                                    <option/>任选
+                                </select>
+                            </div>
+                        </div>
+                        <div class="span8 field-box">
+                            <label>学分：</label>
+                            <div class="ui-select span5">
+                                <select name="courseCredit">
+                                    <option />==请选择学分==
+                                    <option/>0
+                                    <option/>1
+                                    <option/>2
+                                    <option/>3
+                                    <option/>4
+                                    <option/>5
+                                    <option/>6
+                                    <option/>7
+                                    <option/>8
+                                    <option/>9
+                                    <option/>10
+                                </select>
+                            </div>
+                        </div>
+                        <div class="span8 field-box">
+                            <label>考试类型：</label>
+                            <div class="ui-select span5">
+                                <select name="courseExam">
+                                    <option />==请选择考试类型==
+                                    <option/>考试
+                                    <option/>考查
+                                    <option/>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="span8 field-box">
+                            <label>选课限制：</label>
+                            <div>
+                                <input type="button"  class="btn-glow gray"  value="添加限制" data-toggle="modal" data-target="#myModal"/>
+                                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                <h4 class="modal-title" id="myModalLabel">选课学院限制</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div th:each="dept:${depts}">
+                                                    <td>
+                                                        <input type="checkbox" th:value="${dept.getDept()}" style="margin-top: 0px">
+                                                    </td>
+                                                    <td style="margin-top: 4px" th:text="${dept.getDept()}">
+                                                    </td>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                                <button type="button" class="btn btn-primary" id="submitRes">提交</button>
+                                            </div>
+                                        </div><!-- /.modal-content -->
+                                    </div><!-- /.modal -->
+                                </div>
+                            </div>
+                            <div>
+                                <label></label>
+                                <textarea name="courseRestrict" cols="50" rows="10" class="span6" text="" id="restrict"></textarea>
+                            </div>
+                        </div>
+                        <div class="span8 field-box actions">
+                            <input type="submit" id="createStu" class="btn-glow primary"  value="创建课程" />
+                            <span>或</span>
+                            <input type="reset" value="重置" class="reset" />
+                        </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end main container -->
+
+<!-- scripts -->
+<script th:src="@{/asserts/js/jquery.js}"></script>
+<script th:inline="javascript">
+    $("#submitRes").click(function (){
+        var lenDept=[[${#lists.size(depts)}]];
+        $("#restrict").val("");
+        for (var i = 0;i < lenDept;i++){
+            if($("input[type='checkbox']").eq(i).is(':checked')) {
+                var dep=$("input[type='checkbox']").eq(i).val();
+                var res="允许院系专业 "+dep+";";
+                var cur=$("#restrict").val()+res;
+                $("#restrict").val(cur);
+            }
+        }
+        $("#myModal").modal('hide');
+    });
+</script>
+<script th:src="@{/asserts/js/bootstrap.min.js}"></script>
+<script th:src="@{/asserts/js/theme.js}"></script>
+<div style="display:none"><script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script></div>
+</body>
+</html>

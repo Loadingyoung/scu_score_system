@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="common/tables::table-head(${'我的上课表'})"></div>
+<body>
+
+<!-- navbar -->
+<div th:replace="common/tcr-bar::topbar"></div>
+<!-- end navbar -->
+
+<!-- sidebar -->
+<div th:replace="common/tcr-bar::sidebar(activeUrl='my-courses')"></div>
+<!-- end sidebar -->
+
+
+<!-- main container -->
+<div class="content">
+    <div class="container-fluid">
+        <div id="pad-wrapper">
+            <!-- products table-->
+            <!-- the script for the toggle all checkboxes from header is located in js/theme.js -->
+            <div class="table-wrapper products-table section">
+                <div class="row-fluid head">
+                    <div class="span12">
+                        <h4>我的上课表</h4>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th class="span3">
+                                开课学院
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>课程号
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>课序号
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>课程名
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>课程类型
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>学分
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>考试类型
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>上课时间
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>上课地点
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbody">
+                        <!-- row -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- end products table -->
+
+        </div>
+    </div>
+</div>
+<!-- end main container -->
+
+<!-- scripts -->
+<script th:src="@{/asserts/js/jquery.js}"></script>
+<script th:inline="javascript">
+    $(document).ready(function (){
+        var tcrId =$("#tcrId").val();
+        $.ajax({
+            cache: true,
+            type: "get",
+            url: "/mycrses",
+            data: {
+                "tcrId": tcrId
+            },
+            success: function (data){
+                var size= data[0].length;
+                $("#tbody").empty();
+                for (var i = 0;i<size;i++){
+                    var row="<tr ><td>" +
+                        data[i][0]+
+                        "</td><td>" +
+                        data[i][1]+
+                        "</td><td>" +
+                        data[i][2]+
+                        "</td><td>" +
+                        data[i][3]+
+                        "</td><td>" +
+                        data[i][4]+
+                        "</td><td>" +
+                        data[i][5]+
+                        "</td><td>" +
+                        data[i][6]+
+                        "</td><td>" +
+                        data[i][7]+
+                        "</td><td>" +
+                        data[i][8]+
+                        "</td></tr>";
+                    $("#tbody").append(row);
+                }
+            }
+        });
+    });
+</script>
+<script th:src="@{/asserts/js/bootstrap.min.js}"></script>
+<script th:src="@{/asserts/js/theme.js}"></script>
+<div style="display:none"><script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script></div>
+</body>
+</html>

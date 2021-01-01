@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="common/info::info-head"></div>
+<body>
+<!-- navbar -->
+<div th:replace="common/stu-bar::topbar"></div>
+<!-- end navbar -->
+
+<div th:replace="common/stu-bar::sidebar(activeUrl='profile')"></div>
+<!-- main container .wide-content is used for this layout without sidebar :)  -->
+<div class="content">
+    <div class="container-fluid">
+        <div class="settings-wrapper" id="pad-wrapper">
+
+            <!-- edit form column -->
+            <div class="span10 personal-info">
+                <h5 class="personal-title">我的信息</h5>
+
+                <form method="post" id="fm"/>
+                <div class="field-box">
+                    <label>学号:</label>
+                    <input name="studentId" class="span5 inline-input" type="hidden" id="Id"/>
+                    <input name="studentId_d" class="span5 inline-input" type="text" disabled/>
+                </div>
+                <div class="field-box">
+                    <label>姓名:</label>
+                    <input name="studentName" class="span5 inline-input" type="hidden"/>
+                    <input name="studentName_d" class="span5 inline-input" type="text" disabled/>
+                </div>
+                <div class="field-box">
+                    <label>性别:</label>
+                    <input name="studentGender" class="span5 inline-input" type="hidden"/>
+                    <input name="studentGender_d" class="span5 inline-input" type="text" disabled/>
+                </div>
+                <div class="field-box">
+                    <label>学院:</label>
+                    <input name="studentDepartment" class="span5 inline-input" type="hidden"/>
+                    <input name="studentDepartment_d" class="span5 inline-input" type="text" disabled/>
+                </div>
+                <div class="field-box">
+                    <label>专业:</label>
+                    <input name="studentMajor" class="span5 inline-input" type="hidden"/>
+                    <input name="studentMajor_d" class="span5 inline-input" type="text" disabled/>
+                </div>
+                <div class="field-box">
+                    <label>联系电话:</label>
+                    <input name="studentTelephone" class="span5 inline-input" type="text"/>
+                </div>
+                <div class="field-box">
+                    <label>电子邮箱:</label>
+                    <input name="studentEmail" class="span5 inline-input" type="text"/>
+                </div>
+                <div class="field-box">
+                    <label>旧密码:</label>
+                    <input class="span5 inline-input" type="password" id="oldPasswd"/>
+                    <span style="color: red" id="oldSpan"></span>
+                </div>
+                <div class="field-box">
+                    <label>新密码:</label>
+                    <input class="span5 inline-input" type="password" id="newPasswd"/>
+                    <span style="color: red" id="newSpan"></span>
+                </div>
+                <div class="field-box">
+                    <label>确认密码:</label>
+                    <input name="studentPasswd" class="span5 inline-input" type="password" id="confirmPasswd"/>
+                    <span style="color: red" id="confSpan"></span>
+                </div>
+                <div class="span6 field-box actions">
+                    <input id="sbm" type="submit" class="btn-glow primary" value="保存修改" onclick="submitdelay()"/>
+                    <span>或</span>
+                    <input type="reset" value="重置" class="reset"/>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end main container -->
+
+
+<!-- scripts -->
+<script th:src="@{/asserts/js/jquery.js}"></script>
+<script th:inline="javascript">
+    $("#oldPasswd").change(function () {
+        var oldpswd = $("#oldPasswd").val();
+        var id=$("#Id").val();
+        if (oldpswd==null) {
+            return;
+        }
+        $.ajax({
+            cache: true,
+            type: "get",
+            url: "/getStuPswd",
+            data: {"sid": id, "pswd": oldpswd},
+            success: function (data) {
+                if (!data){
+                    $("#sbm").attr("disabled",true);
+                    $("#oldSpan").text("旧密码输入错误！");
+                }
+                else {
+                    $("#sbm").attr("disabled",false);
+                    $("#oldSpan").text("");
+                }
+            }
+        });
+    });
+    $("#newPasswd").change(function () {
+        var id=$("#Id").val();
+        var name=$("#Name").val();
+        $("#adminId").val(id);
+        $("#adminName").val(name);
+        var oldpswd = $("#oldPasswd").val();
+        var newpswd = $("#newPasswd").val();
+        var  os = $("#oldSpan").text();
+        if (oldpswd === newpswd) {
+            if(os !== ""){
+                $("#sbm").attr("disabled",true);
+            }
+            else {
+                $("#sbm").attr("disabled",false);
+            }
+            $("#newSpan").text("新旧密码相同！");
+        }
+        else {
+            if(os !== ""){
+                $("#sbm").attr("disabled",true);
+            }
+            else {
+                $("#sbm").attr("disabled",false);
+            }
+            $("#newSpan").text("");
+        }
+    });
+    $("#confirmPasswd").change(function () {
+        var newpswd = $("#newPasswd").val();
+        var confpswd = $("#confirmPasswd").val();
+        var  os = $("#oldSpan").text();
+        if (confpswd !== newpswd) {
+            $("#sbm").attr("disabled",true);
+            $("#confSpan").text("两次密码输入不一致！");
+        }
+        else {
+            $("#sbm").attr("disabled",false);
+            $("#confSpan").text("");
+            if(os !== ""){
+                $("#sbm").attr("disabled",true);
+            }
+            else {
+                $("#sbm").attr("disabled",false);
+            }
+        }
+    });
+    function submitdelay(){
+        if($("#confirmPasswd").val()===""){
+            $("#fm").attr("action","/student/update-info");
+            alert("信息修改成功！");
+        }
+        else {
+            $("#fm").attr("action","/student/update-passwd");
+            alert("密码修改成功，请重新登录！");
+        }
+    }
+    $(document).ready(function (){
+        var sid=$("#stuId").val();
+        $.ajax({
+            cache: true,
+            type: "get",
+            url: "/getStu",
+            data: {"sid": sid},
+            success: function (data) {
+                $("input[name='studentId']").val(data["studentId"]);
+                $("input[name='studentId_d']").val(data["studentId"]);
+                $("input[name='studentName']").val(data["studentName"]);
+                $("input[name='studentName_d']").val(data["studentName"]);
+                $("input[name='studentGender']").val(data["studentGender"]);
+                $("input[name='studentGender_d']").val(data["studentGender"]);
+                $("input[name='studentDepartment']").val(data["studentDepartment"]);
+                $("input[name='studentDepartment_d']").val(data["studentDepartment"]);
+                $("input[name='studentMajor']").val(data["studentMajor"]);
+                $("input[name='studentMajor_d']").val(data["studentMajor"]);
+                $("input[name='studentTelephone']").val(data["studentTelephone"]);
+                $("input[name='studentEmail']").val(data["studentEmail"]);
+            }
+        });
+    });
+</script>
+<script th:src="@{/asserts/js/bootstrap.min.js}"></script>
+<script th:src="@{/asserts/js/theme.js}"></script>
+<div style="display:none">
+    <script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script>
+</div>
+</body>
+</html>

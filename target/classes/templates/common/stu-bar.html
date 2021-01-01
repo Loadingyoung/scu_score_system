@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- navbar -->
+<div class="navbar navbar-inverse" th:fragment="topbar">
+    <div class="navbar-inner">
+        <a class="brand" th:href="@{/student/main.html}">四川大学成绩管理系统</a>
+        <div class="nav pull-right">
+            <input type="hidden" name="stuId" id="stuId" th:value="${loginStuId}">
+            <input type="hidden" name="stuName" id="stuName" th:value="${loginStuName}">
+            <li class="dropdown">
+                <a class="dropdown-toggle hidden-phone" data-toggle="dropdown" th:text="${'欢迎你，'+loginStuName+'!'}">
+                </a>
+            </li>
+            <li class="settings hidden-phone">
+                <a th:href="@{/student}" role="button">
+                    <i class="icon-share-alt"></i>
+                </a>
+            </li>
+        </div>
+    </div>
+</div>
+<!-- end navbar -->
+<!-- sidebar -->
+<div id="sidebar-nav" th:fragment="sidebar">
+    <ul id="dashboard-menu">
+        <li th:class="${activeUrl=='main'?'active':''}">
+            <div th:class="${activeUrl=='main'?'pointer':'display: none'}">
+                <div class="arrow"></div>
+                <div class="arrow_border"></div>
+            </div>
+            <a th:href="@{/student/main.html}">
+                <i class="icon-home"></i>
+                <span style="font-size: medium">主页</span>
+            </a>
+        </li>
+        <li th:class="${(activeUrl=='select-course')or(activeUrl=='drop-course')?'active':''}">
+            <div th:class="${(activeUrl=='select-course')or(activeUrl=='drop-course')?'pointer':'display: none'}">
+                <div class="arrow"></div>
+                <div class="arrow_border"></div>
+            </div>
+            <a class="dropdown-toggle" href="#">
+                <i class="icon-book"></i>
+                <span style="font-size: medium">课程管理</span>
+                <i class="icon-chevron-down"></i>
+            </a>
+            <ul class="submenu" th:style="${(activeUrl=='select-course')or(activeUrl=='drop-course')?'display: block':'display: none'}">
+                <li><a th:href="@{/student/select-course.html}">选课</a></li>
+                <li><a th:href="@{/student/drop-course.html}">退课</a></li>
+            </ul>
+        </li>
+        <li th:class="${activeUrl=='my-courses'?'active':''}">
+            <div th:class="${activeUrl=='my-courses'?'pointer':'display: none'}">
+                <div class="arrow"></div>
+                <div class="arrow_border"></div>
+            </div>
+            <a th:href="@{/student/my-courses.html}">
+                <i class="icon-calendar"></i>
+                <span style="font-size: medium">我的课表</span>
+            </a>
+        </li>
+        <li th:class="${activeUrl=='my-score'?'active':''}">
+            <div th:class="${activeUrl=='my-score'?'pointer':'display: none'}">
+                <div class="arrow"></div>
+                <div class="arrow_border"></div>
+            </div>
+            <a th:href="@{/student/my-score.html}">
+                <i class="icon-edit"></i>
+                <span style="font-size: medium">成绩单</span>
+            </a>
+        </li>
+        <li th:class="${activeUrl=='profile'?'active':''}">
+            <div th:class="${activeUrl=='profile'?'pointer':'display: none'}">
+                <div class="arrow"></div>
+                <div class="arrow_border"></div>
+            </div>
+            <a th:href="@{/student/profile.html}">
+                <i class="icon-user"></i>
+                <span style="font-size: medium">个人信息</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<!-- end sidebar -->
+</body>
+</html>

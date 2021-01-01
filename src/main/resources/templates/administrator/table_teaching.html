@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="common/tables::table-head(${'授课管理'})"></div>
+<body>
+
+<!-- navbar -->
+<div th:replace="common/admin-bar::topbar"></div>
+<!-- end navbar -->
+
+<!-- sidebar -->
+<div th:replace="common/admin-bar::sidebar(activeUrl='manage-course')"></div>
+<!-- end sidebar -->
+
+
+<!-- main container -->
+<div class="content">
+    <div class="container-fluid">
+        <div id="pad-wrapper">
+            <div style="margin-top: 20px;margin-bottom: 20px">
+                <a class="btn-flat gray" th:href="@{/admin/manage-course.html}">课程信息表</a>
+                <a class="btn-flat default" th:href="@{/admin/manage-select-course.html}">选课信息表</a>
+                <a class="btn-flat primary" th:href="@{/admin/manage-teaching-course.html}">授课信息表</a>
+            </div>
+            <!-- products table-->
+            <!-- the script for the toggle all checkboxes from header is located in js/theme.js -->
+            <div class="table-wrapper products-table section">
+                <div class="row-fluid head">
+                    <div class="span12">
+                        <h4>教师授课名单</h4>
+                    </div>
+                </div>
+
+                <div class="row-fluid filter-block">
+                    <div class="pull-right">
+                        <input type="text" class="search" />
+                        <a class="btn-flat success new-product" th:href="@{/admin/manage-teaching-course/add}">+ 添加授课</a>
+                    </div>
+                </div>
+
+                <div class="row-fluid">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th class="span3">
+                                课程号
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>教师工号
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>课序号
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>上课时间
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>上课地点
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>课程公告
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>操作
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- row -->
+                        <tr th:each="teaching:${teachings}">
+                            <td th:text="${teaching.getTeachingId().getCourse().getCourseId()}"></td>
+                            <td th:text="${teaching.getTeachingId().getTeacher().getTeacherId()}"></td>
+                            <td th:text="${teaching.getCourseOrder()}"></td>
+                            <td th:text="${teaching.getTeachingTime()}"></td>
+                            <td th:text="${teaching.getTeachingAddress()}"></td>
+                            <td th:text="${teaching.getTeacherAnnounce()}"></td>
+                            <td>
+                                <ul class="actions">
+                                    <form th:action="@{/admin/manage-teaching-course/delete/}+${teaching.getTeachingId().getCourse().getCourseId()+'&'+teaching.getTeachingId().getTeacher().getTeacherId()}" method="post">
+                                        <li><a class="btn" th:href="@{/admin/manage-teaching-course/edit/}+${teaching.getTeachingId().getCourse().getCourseId()+'&'+teaching.getTeachingId().getTeacher().getTeacherId()}">编辑</a></li>
+                                        <input type="hidden" name="_method" value="delete"/>
+                                        <li class="last"><button class="btn" type="submit">删除</button></li>
+                                    </form>
+                                </ul>
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- end products table -->
+
+        </div>
+    </div>
+</div>
+<!-- end main container -->
+
+<!-- scripts -->
+<script th:src="@{/asserts/js/jquery.js}"></script>
+<script th:src="@{/asserts/js/bootstrap.min.js}"></script>
+<script th:src="@{/asserts/js/theme.js}"></script>
+<div style="display:none"><script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script></div>
+</body>
+</html>

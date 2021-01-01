@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="common/score::score-head"></div>
+<body>
+
+<!-- navbar -->
+<div th:replace="common/tcr-bar::topbar"></div>
+<!-- end navbar -->
+
+<!-- sidebar -->
+<div th:replace="common/tcr-bar::sidebar(activeUrl='manage-score')"></div>
+<!-- end sidebar -->
+
+
+<!-- main container -->
+<div class="content">
+    <div class="container-fluid">
+        <div id="pad-wrapper" class="new-user">
+            <div class="table-wrapper products-table">
+                <div class="row-fluid head">
+                    <div class="span12">
+                        <h4>成绩列表</h4>
+                    </div>
+                </div>
+                <div class="row-fluid span3">
+                    <div class="ui-select span2" style="margin-top: 10px;margin-bottom: 30px">
+                        <select id="course">
+                            <option/>
+                            ==请选择班级==
+                        </select>
+                    </div>
+                    <div class="pull-right">
+                        <input type="button" class="btn default" value="设置分数占比" style="margin-right: 200px"
+                               data-toggle="modal" data-target="#scoreModal">
+                    </div>
+                </div>
+                <div class="modal fade hide" id="scoreModal" tabindex="-1" role="dialog"
+                     aria-labelledby="scoreModalLabel" aria-hidden="true" data-show="false">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+                                </button>
+                                <h4 class="modal-title" id="scoreModalLabel">设置分数占比</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <span style="color: red;margin-left: 50px" id="warn" ></span>
+                                </div>
+                                <div class="row" align="center">
+                                    <div class="span2">
+                                        <div style="padding-left: 20px;padding-bottom: 20px;font-size: 15px">
+                                            考勤占比
+                                        </div>
+                                        <input type="text" value="25" class="knob second" data-thickness=".3"
+                                               data-inputcolor="#333" data-fgcolor="#30a1ec" data-bgcolor="#d4ecfd"
+                                               data-width="100" name="knob" id="atte"/>
+                                    </div>
+                                    <div class="span2">
+                                        <div style="padding-left: 20px;padding-bottom: 20px;font-size: 15px" >
+                                            作业占比
+                                        </div>
+                                        <input type="text" value="25" class="knob second" data-thickness=".3"
+                                               data-inputcolor="#333" data-fgcolor="#8ac368" data-bgcolor="#c4e9aa"
+                                               data-width="100" name="knob" id="hwrk"/>
+                                    </div>
+                                    <div class="span2">
+                                        <div style="padding-left: 20px;padding-bottom: 20px;font-size: 15px" >
+                                            期中占比
+                                        </div>
+                                        <input type="text" value="25" class="knob second" data-thickness=".3"
+                                               data-inputcolor="#333" data-fgcolor="#5ba0a3" data-bgcolor="#cef3f5"
+                                               data-width="100" name="knob" id="midt"/>
+                                    </div>
+                                    <div class="span2">
+                                        <div style="padding-left: 20px;padding-bottom: 20px;font-size: 15px">
+                                            期末占比
+                                        </div>
+                                        <input type="text" value="25" class="knob second" data-thickness=".3"
+                                               data-inputcolor="#333" data-fgcolor="#b85e80" data-bgcolor="#f8d2e0"
+                                               data-width="100" name="knob" id="endt"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" id="close" onclick="hide()">关闭</button>
+                                <button type="button" class="btn btn-primary" id="submit" onclick="hide()">提交</button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal -->
+                </div>
+                <div class="span15">
+                    <div class="row-fluid">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th class="span3">
+                                    学号
+                                </th>
+                                <th class="span3">
+                                    <span class="line"></span>姓名
+                                </th>
+                                <th class="span3">
+                                    <span class="line"></span>考勤
+                                </th>
+                                <th class="span3">
+                                    <span class="line"></span>作业
+                                </th>
+                                <th class="span3">
+                                    <span class="line"></span>期中
+                                </th>
+                                <th class="span3">
+                                    <span class="line"></span>期末
+                                </th>
+                                <th class="span3">
+                                    <span class="line"></span>总分
+                                </th>
+                                <th class="span3">
+                                    <span class="line"></span>操作
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody id="tbody">
+                            <!-- row -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end main container -->
+
+<!-- scripts -->
+<script th:src="@{/asserts/js/jquery.js}"></script>
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $("#scoreModal").modal({backdrop: 'static', keyboard: false});
+        var tcrId = $("#tcrId").val();
+        $.ajax({
+            cache: true,
+            type: "get",
+            url: "/mycrses",
+            data: {
+                "tcrId": tcrId
+            },
+            success: function (data) {
+                var size = data.length;
+                $("#course").empty();
+                $("#course").append("<option />==请选择班级==");
+                for (var i = 0; i < size; i++) {
+                    $("#course").append("<option value='" + data[i][1] + "' />" + data[i][3] + "_" + data[i][2]);
+                }
+            }
+        });
+    });
+    $("#course").change(function () {
+        var crsId = $("#course").val();
+        var tcrId = $("#tcrId").val();
+        if (crsId === "") {
+            return;
+        } else {
+            $.ajax({
+                cache: true,
+                type: "get",
+                url: "/getStus",
+                data: {
+                    "tcrId": tcrId,
+                    "crsId": crsId
+                },
+                success: function (data) {
+                    var len = data.length;
+                    for (var i = 0; i < len; i++) {
+                        var row = "<tr ><td>" +
+                            data[i][0] +
+                            "</td><td>" +
+                            data[i][1] +
+                            "</td><td>" +
+                            "<input type='text' style='width: 56.8px;margin-bottom: 0px' id='"+i+"'value='"+data[i][2]+"' onchange='calcuScore(this)'>" +
+                            "</td><td>" +
+                            "<input type='text' style='width: 56.8px;margin-bottom: 0px' id='"+i+"'value='"+data[i][3]+"' onchange='calcuScore(this)'>" +
+                            "</td><td>" +
+                            "<input type='text' style='width: 56.8px;margin-bottom: 0px' id='"+i+"'value='"+data[i][4]+"' onchange='calcuScore(this)'>" +
+                            "</td><td>" +
+                            "<input type='text' style='width: 56.8px;margin-bottom: 0px' id='"+i+"'value='"+data[i][5]+"' onchange='calcuScore(this)'>" +
+                            "</td><td>" +
+                            "<input type='text' style='width: 56.8px;margin-bottom: 0px' id='"+ data[i][0] +"'value='"+data[i][6]+"'>" +
+                            "</td><td>" +
+                            "<input type='submit' class='btn-glow' style='width: 56.8px' id='" + i + "' onclick='submitScore(this)' disabled>" +
+                            "</td></tr>";
+                        $("#tbody").append(row);
+                    }
+                }
+            });
+        }
+    });
+    $("input[name='knob']").change(function () {
+        var atte = parseFloat($("#atte").val()) / 100.0;
+        var hwrk = parseFloat($("#hwrk").val()) / 100.0;
+        var midt = parseFloat($("#midt").val()) / 100.0;
+        var endt = parseFloat($("#endt").val()) / 100.0;
+        if (atte + hwrk + midt + endt !== 1) {
+            $("#warn").text("请使占比总和等于1！")
+            $("#close").attr("disabled",true);
+            $("#submit").attr("disabled",true);
+        }
+        else {
+            $("#warn").text("")
+            $("#close").attr("disabled",false);
+            $("#close").attr("data-dismiss","modal");
+            $("#submit").attr("disabled",false);
+        }
+
+    });
+    function calcuScore(_this) {
+        var id = parseInt($(_this).attr("id"));
+        var atte_p = parseFloat($("#atte").val()) / 100.0;
+        var hwrk_p = parseFloat($("#hwrk").val()) / 100.0;
+        var midt_p = parseFloat($("#midt").val()) / 100.0;
+        var endt_p = parseFloat($("#endt").val()) / 100.0;
+        var tb = document.getElementById('tbody');
+        var row = tb.rows[id];
+        var stuId = parseInt(row.cells[0].innerText);
+        var atte = parseInt(row.cells[2].childNodes[0].value);
+        if (atte>100){
+            atte = 100;
+            $(_this).val(atte);
+        }
+        if(atte<0){
+            atte = 0;
+            $(_this).val(atte);
+        }
+        var hwrk = parseInt(row.cells[3].childNodes[0].value);
+        if (hwrk>100){
+            hwrk=100;
+            $(_this).val(hwrk);
+        }
+        if (hwrk<0){
+            hwrk=0;
+            $(_this).val(hwrk);
+        }
+        var midt = parseInt(row.cells[4].childNodes[0].value);
+        if (midt>100){
+            midt=100;
+            $(_this).val(midt);
+        }
+        if (midt<0){
+            midt=0;
+            $(_this).val(midt);
+        }
+        var endt = parseInt(row.cells[5].childNodes[0].value);
+        if (endt>100){
+            endt=100;
+            $(_this).val(endt);
+        }
+        if (endt<0){
+            endt=0;
+            $(_this).val(endt);
+        }
+        var q = !isNaN(atte) && !isNaN(hwrk) && !isNaN(midt) && !isNaN(endt)
+        if(q){
+            var score = Math.round(atte * atte_p + hwrk * hwrk_p + midt * midt_p + endt * endt_p);
+            $("input[id="+stuId+"]").val(score);
+        }
+    }
+    function submitScore(_this){
+        var id = parseInt($(_this).attr("id"));
+        var crsId = $("#course").val();
+        var tcrId = $("#tcrId").val();
+        var tb = document.getElementById('tbody');
+        var row = tb.rows[id];
+        var list=[]
+        var stuId = parseInt(row.cells[0].innerText);
+        var atte = parseInt(row.cells[2].childNodes[0].value);
+        list.push(atte);
+        var hwrk = parseInt(row.cells[3].childNodes[0].value);
+        list.push(hwrk);
+        var midt = parseInt(row.cells[4].childNodes[0].value);
+        list.push(midt);
+        var endt = parseInt(row.cells[5].childNodes[0].value);
+        list.push(endt);
+        var score = parseInt(row.cells[6].childNodes[0].value);
+        list.push(score);
+        $.ajax({
+            cache: true,
+            type: "post",
+            url: "/score",
+            data: {
+                "stuId": stuId,
+                "tcrId": tcrId,
+                "crsId": crsId,
+                "scores": list
+            },
+            success: function (data) {
+                alert("提交成功！")
+            }
+        });
+    }
+    function hide(){
+        var atte = parseFloat($("#atte").val()) / 100.0;
+        var hwrk = parseFloat($("#hwrk").val()) / 100.0;
+        var midt = parseFloat($("#midt").val()) / 100.0;
+        var endt = parseFloat($("#endt").val()) / 100.0;
+        if (atte + hwrk + midt + endt !== 1) {
+            $("#warn").text("请使占比总和等于1！")
+            $("submit").attr("disabled",true);
+        }
+        else {
+            $("#warn").text("")
+            $("submit").attr("disabled",false);
+            $("#scoreModal").modal("hide");
+        }
+        $("input[class='btn-glow']").each(function (){
+            $(this).attr("disabled",false);
+        });
+    }
+</script>
+<div th:replace="common/score::script">
+</div>
+<script th:src="@{/asserts/js/theme.js}"></script>
+<div style="display:none">
+    <script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script>
+</div>
+</body>
+</html>

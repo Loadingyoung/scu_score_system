@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- navbar -->
+<div class="navbar navbar-inverse" th:fragment="topbar">
+    <div class="navbar-inner">
+        <a class="brand" th:href="@{/admin/main.html}">四川大学成绩管理系统</a>
+        <div class="nav pull-right">
+            <input type="hidden" id="Id" th:value="${loginAdminId}">
+            <input type="hidden" id="Name" th:value="${loginAdminName}">
+            <li class="dropdown">
+                <a class="dropdown-toggle hidden-phone" data-toggle="dropdown" th:text="${'欢迎你，'+loginAdminName+'!'}">
+                </a>
+            </li>
+            <li class="settings hidden-phone">
+                <a th:href="@{/admin}" role="button">
+                    <i class="icon-share-alt"></i>
+                </a>
+            </li>
+        </div>
+    </div>
+</div>
+<!-- end navbar -->
+<!-- sidebar -->
+<div id="sidebar-nav" th:fragment="sidebar">
+    <ul id="dashboard-menu">
+        <li th:class="${activeUrl=='main'?'active':''}">
+            <div th:class="${activeUrl=='main'?'pointer':'display: none'}">
+                <div class="arrow"></div>
+                <div class="arrow_border"></div>
+            </div>
+            <a th:href="@{/admin/main.html}">
+                <i class="icon-home"></i>
+                <span style="font-size: medium">主页</span>
+            </a>
+        </li>
+        <li th:class="${activeUrl=='manage-teacher'?'active':''}">
+            <div th:class="${activeUrl=='manage-teacher'?'pointer':'display: none'}">
+                <div class="arrow"></div>
+                <div class="arrow_border"></div>
+            </div>
+            <a th:href="@{/admin/manage-teacher.html}">
+                <i class="icon-user"></i>
+                <span style="font-size: medium">教师管理</span>
+            </a>
+        </li>
+        <li th:class="${activeUrl=='manage-student'?'active':''}">
+            <div th:class="${activeUrl=='manage-student'?'pointer':'display: none'}">
+                <div class="arrow"></div>
+                <div class="arrow_border"></div>
+            </div>
+            <a th:href="@{/admin/manage-student.html}">
+                <i class="icon-group"></i>
+                <span style="font-size: medium">学生管理</span>
+            </a>
+        </li>
+        <li th:class="${activeUrl=='manage-course'?'active':''}">
+            <div th:class="${activeUrl=='manage-course'?'pointer':'display: none'}">
+                <div class="arrow"></div>
+                <div class="arrow_border"></div>
+            </div>
+            <a th:href="@{/admin/manage-course.html}">
+                <i class="icon-book"></i>
+                <span style="font-size: medium">课程管理</span>
+            </a>
+        </li>
+        <li th:class="${activeUrl=='profile'?'active':''}">
+            <div th:class="${activeUrl=='profile'?'pointer':'display: none'}">
+                <div class="arrow"></div>
+                <div class="arrow_border"></div>
+            </div>
+            <a th:href="@{/admin/profile.html}">
+                <i class="icon-cog"></i>
+                <span style="font-size: medium">修改密码</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<!-- end sidebar -->
+</body>
+</html>

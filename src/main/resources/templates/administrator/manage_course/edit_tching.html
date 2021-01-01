@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="common/new::new-head(${'修改授课信息'})"></div>
+<body>
+
+<!-- navbar -->
+<div th:replace="common/admin-bar::topbar"></div>
+<!-- end navbar -->
+
+<!-- sidebar -->
+<div th:replace="common/admin-bar::sidebar(activeUrl='manage-course')"></div>
+<!-- end sidebar -->
+
+
+<!-- main container -->
+<div class="content">
+    <div class="container-fluid">
+        <div id="pad-wrapper" class="new-user">
+
+            <div class="row-fluid header">
+                <h3>添加授课信息</h3>
+            </div>
+
+            <div class="modal fade hide" id="teacherModal" tabindex="-1" role="dialog" aria-labelledby="teacherModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="teacherModalLabel">教师清单</h4>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>选择</th>
+                                    <th>工号</th>
+                                    <th>姓名</th>
+                                    <th>性别</th>
+                                    <th>学院</th>
+                                    <th>职称</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!-- row -->
+                                <tr th:each="teacher:${teachers}">
+                                    <td>
+                                        <input name="tcrCheckbox" type="checkbox" th:value="${teacher.getTeacherId()}" style="margin-top: 0px" onclick="clickTcr(this)">
+                                    </td>
+                                    <td th:text="${teacher.getTeacherId()}"></td>
+                                    <td th:text="${teacher.getTeacherName()}"></td>
+                                    <td th:text="${teacher.getTeacherGender()}"></td>
+                                    <td th:text="${teacher.getTeacherDepartment()}"></td>
+                                    <td th:text="${teacher.getTeacherTitle()}"></td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" id="submitTcr">提交</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+            <div class="modal fade hide" id="courseModal" tabindex="-1" role="dialog" aria-labelledby="courseModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="courseModalLabel">课程清单</h4>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-hover">
+                                <thead>
+                                <tr>
+                                    <th>选择</th>
+                                    <th>开课学院</th>
+                                    <th>课程号</th>
+                                    <th>课程名</th>
+                                    <th>课程类别</th>
+                                    <th>学分</th>
+                                    <th>考试类型</th>
+                                    <th>选课限制</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!-- row -->
+                                <tr th:each="course:${courses}">
+                                    <td>
+                                        <input name="crsCheckbox" type="checkbox" th:value="${course.getCourseId()}" style="margin-top: 0px" onclick="clickCrs(this)">
+                                    </td>
+                                    <td th:text="${course.getCourseDept()}"></td>
+                                    <td th:text="${course.getCourseId()}"></td>
+                                    <td th:text="${course.getCourseName()}"></td>
+                                    <td th:text="${course.getCourseType()}"></td>
+                                    <td th:text="${course.getCourseCredit()}"></td>
+                                    <td th:text="${course.getCourseExam()}"></td>
+                                    <td th:text="${course.getCourseRestrict()}"></td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button type="button" class="btn btn-primary" id="submitCrs">提交</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal -->
+            </div>
+            <div class="row-fluid form-wrapper">
+                <!-- left column -->
+                <div class="span8">
+                    <div class="container">
+                        <form class="new_user_form inline-input" th:action="@{/admin/manage-teaching-course/add}" method="post">
+                            <div class="span8 field-box">
+                                <label>课程号：</label>
+                                <input name="teachingId.course.courseId" class="span5" type="text" id="crsId" th:value="${tching.getTeachingId().getCourse().getCourseId()}">
+                                <input type="button" class="btn-glow gray" value="选择课程" data-toggle="modal" data-target="#courseModal">
+                            </div>
+                            <div class="span8 field-box">
+                                <label>教师工号：</label>
+                                <input name="teachingId.teacher.teacherId" class="span5" type="text" id="tchId" th:value="${tching.getTeachingId().getTeacher().getTeacherId()}">
+                                <input type="button" class="btn-glow gray" value="选择教师" data-toggle="modal" data-target="#teacherModal">
+                            </div>
+                            <div class="span8 field-box">
+                                <label>课序号：</label>
+                                <input name="courseOrder" class="span6" type="text" th:value="${tching.getCourseOrder()}"/>
+                            </div>
+                            <div class="span8 field-box">
+                                <label>上课时间：</label>
+                                <input name="teachingTime" class="span6" type="hidden" id="time" th:value="${tching.getTeachingTime()}"/>
+                                <div class="ui-select span1">
+                                    <select id="selectWeekFrom">
+                                        <option/>
+                                        ==起始周==
+                                        <option th:selected="${tching.getTime()[0]=='1'}"/>
+                                        1
+                                        <option th:selected="${tching.getTime()[0]=='2'}"/>
+                                        2
+                                        <option th:selected="${tching.getTime()[0]=='3'}"/>
+                                        3
+                                        <option th:selected="${tching.getTime()[0]=='4'}"/>
+                                        4
+                                        <option th:selected="${tching.getTime()[0]=='5'}"/>
+                                        5
+                                        <option th:selected="${tching.getTime()[0]=='6'}"/>
+                                        6
+                                        <option th:selected="${tching.getTime()[0]=='7'}"/>
+                                        7
+                                        <option th:selected="${tching.getTime()[0]=='8'}"/>
+                                        8
+                                        <option th:selected="${tching.getTime()[0]=='9'}"/>
+                                        9
+                                        <option th:selected="${tching.getTime()[0]=='10'}"/>
+                                        10
+                                        <option th:selected="${tching.getTime()[0]=='11'}"/>
+                                        11
+                                        <option th:selected="${tching.getTime()[0]=='12'}"/>
+                                        12
+                                        <option th:selected="${tching.getTime()[0]=='13'}"/>
+                                        13
+                                        <option th:selected="${tching.getTime()[0]=='14'}"/>
+                                        14
+                                        <option th:selected="${tching.getTime()[0]=='15'}"/>
+                                        15
+                                        <option th:selected="${tching.getTime()[0]=='16'}"/>
+                                        16
+                                        <option th:selected="${tching.getTime()[0]=='17'}"/>
+                                        17
+                                        <option th:selected="${tching.getTime()[0]=='18'}"/>
+                                        18
+                                        <option th:selected="${tching.getTime()[0]=='19'}"/>
+                                        19
+                                        <option th:selected="${tching.getTime()[0]=='20'}"/>
+                                        20
+                                    </select>
+                                </div>
+                                <div class="span1" style="margin-left: 0px;width: 10px;height: 25px;line-height: 25px">——</div>
+                                <div class="ui-select span1">
+                                    <select id="selectWeekTo" th:each="wk:${week}">
+                                        <option/>
+                                        ==结束周==
+                                        <option th:text="${wk}" th:selected="${wk==tching.getTime()[1]}"/>
+                                    </select>
+                                </div>
+                                <div class="span1" style="margin-left: 0px;width: 10px;height: 25px;line-height: 25px">周</div>
+                            </div>
+                            <div class="span8 field-box">
+                                <label></label>
+                                <div class="span1" style="margin-left: 0px;width: 25px;height: 25px;line-height: 25px">星期</div>
+                                <div class="ui-select span1">
+                                    <select id="selectDay">
+                                        <option/>
+                                        ==星期==
+                                        <option th:selected="${tching.getTime()[2]=='一'}"/>
+                                        一
+                                        <option th:selected="${tching.getTime()[2]=='二'}"/>
+                                        二
+                                        <option th:selected="${tching.getTime()[2]=='三'}"/>
+                                        三
+                                        <option th:selected="${tching.getTime()[2]=='四'}"/>
+                                        四
+                                        <option th:selected="${tching.getTime()[2]=='五'}"/>
+                                        五
+                                        <option th:selected="${tching.getTime()[2]=='六'}"/>
+                                        六
+                                        <option th:selected="${tching.getTime()[2]=='日'}"/>
+                                        日
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="span8 field-box">
+                                <label></label>
+                                <div class="ui-select span1">
+                                    <select id="selectSectionFrom">
+                                        <option/>
+                                        ==起始节==
+                                        <option th:selected="${tching.getTime()[3]=='1'}"/>
+                                        1
+                                        <option th:selected="${tching.getTime()[3]=='2'}"/>
+                                        2
+                                        <option th:selected="${tching.getTime()[3]=='3'}"/>
+                                        3
+                                        <option th:selected="${tching.getTime()[3]=='4'}"/>
+                                        4
+                                        <option th:selected="${tching.getTime()[3]=='5'}"/>
+                                        5
+                                        <option th:selected="${tching.getTime()[3]=='6'}"/>
+                                        6
+                                        <option th:selected="${tching.getTime()[3]=='7'}"/>
+                                        7
+                                        <option th:selected="${tching.getTime()[3]=='8'}"/>
+                                        8
+                                        <option th:selected="${tching.getTime()[3]=='9'}"/>
+                                        9
+                                        <option th:selected="${tching.getTime()[3]=='10'}"/>
+                                        10
+                                        <option th:selected="${tching.getTime()[3]=='11'}"/>
+                                        11
+                                        <option th:selected="${tching.getTime()[3]=='12'}"/>
+                                        12
+                                    </select>
+                                </div>
+                                <div class="span1" style="margin-left: 0px;width: 10px;height: 25px;line-height: 25px">——</div>
+                                <div class="ui-select span1">
+                                    <select id="selectSectionTo" th:each="sct:${section}">
+                                        <option/>
+                                        ==结束节==
+                                        <option th:text="${sct}" th:selected="${sct==tching.getTime()[4]}"/>
+                                    </select>
+                                </div>
+                                <div class="span1" style="margin-left: 0px;width: 10px;height: 25px;line-height: 25px">节</div>
+                            </div>
+                            <div class="span8 field-box">
+                                <label>上课地点：</label>
+                                <input name="teachingAddress" class="span6" type="hidden" id="addr" th:value="${tching.getTeachingAddress()}"/>
+                                <div class="ui-select span2">
+                                    <select id="selectCampus">
+                                        <option/>
+                                        ==请选择校区==
+                                        <option value="1" th:text="${'望江'}" th:selected="${tching.getAddress()[0]=='望江'}"/>
+                                        <option value="2" th:text="${'华西'}" th:selected="${tching.getAddress()[0]=='华西'}"/>
+                                        <option value="3" th:text="${'江安'}" th:selected="${tching.getAddress()[0]=='江安'}"/>
+                                    </select>
+                                </div>
+                                <div class="ui-select span2">
+                                    <select id="selectBuilding">
+                                        <option th:text="${'==请选择大楼=='}"/>
+                                        <option th:each="bd:${buildings}" th:text="${bd.getBuilding()}" th:value="${bd.getBuilding()}" th:selected="${bd.getBuilding()==tching.getAddress()[1]}"/>
+                                    </select>
+                                </div>
+                                <div class="ui-select span2">
+                                    <select id="selectRoom" >
+                                        <option th:text="${'==请选择教室=='}"/>
+                                        <option th:each="rm:${rooms}" th:text="${rm.getRoom()}" th:value="${rm.getRoom()}" th:selected="${rm.getRoom()==tching.getAddress()[2]}"/>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="span6 field-box actions">
+                                <input type="submit" id="createStu" class="btn-glow primary" value="修改授课"/>
+                                <span>或</span>
+                                <input type="reset" value="重置" class="reset"/>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end main container -->
+
+<!-- scripts -->
+<script th:src="@{/asserts/js/jquery.js}"></script>
+<script>
+    $("#selectWeekFrom").change(function () {
+        var dept = $("#selectWeekFrom").val();
+        console.log(dept);
+        if (dept == "") {
+            return;
+        } else {
+            $("#selectWeekTo").empty();
+            $("#selectWeekTo").append("<option />==结束周==");
+            for (var i = dept; i <= 20; i++) {
+                $("#selectWeekTo").append("<option />" + i);
+            }
+        }
+    });
+    $("#selectSectionFrom").change(function () {
+        var dept = $("#selectSectionFrom").val();
+        console.log(dept);
+        if (dept == "") {
+            return;
+        } else {
+            $("#selectSectionTo").empty();
+            $("#selectSectionTo").append("<option />==结束节==");
+            for (var i = dept; i <= 12; i++) {
+                $("#selectSectionTo").append("<option />" + i);
+            }
+        }
+    });
+    $("#selectCampus").change(function () {
+        var campus = $("#selectCampus").val();
+        if (campus == null) {
+            return;
+        }
+        $.ajax({
+            cache: true,
+            type: "get",
+            url: "/getBuilding",
+            data: {"campus": campus},
+            success: function (data) {
+                var building = $("#selectBuilding").empty();
+                building.append("<option />==请选择大楼==");
+                var room = $("#selectRoom").empty();
+                room.append("<option />==请选择教室==");
+                for (var i = 0; i < data.length; i++) {
+                    building.append("<option value='" + data[i].building + "' \>" + data[i].building);
+                }
+            }, error: function (error) {
+                notify("数据获取失败，请重新刷新！");
+            }
+        });
+    });
+    $("#selectBuilding").change(function () {
+        var campus = $("#selectCampus").val();
+        var building = $("#selectBuilding").val();
+        if (campus == null || building == null) {
+            return;
+        }
+        $.ajax({
+            cache: true,
+            type: "get",
+            url: "/getRoom",
+            data: {"campus": campus, "building": building},
+            success: function (data) {
+                var room = $("#selectRoom").empty();
+                room.append("<option />==请选择教室==");
+                for (var i = 0; i < data.length; i++) {
+                    room.append("<option value='" + data[i].room + "' \>" + data[i].room);
+                }
+            }, error: function (error) {
+                notify("数据获取失败，请重新刷新！");
+            }
+        });
+    });
+
+    function timeChanged() {
+        var tm = $("#selectWeekFrom").val() + "-" + $("#selectWeekTo").val() + "周 星期" + $("#selectDay").val() + " " + $("#selectSectionFrom").val() + "-" + $("#selectSectionTo").val() + "节";
+        $("#time").val(tm)
+    }
+
+    $("#selectWeekTo").change(timeChanged);
+    $("#selectDay").change(timeChanged);
+    $("#selectSectionTo").change(timeChanged);
+    $("#selectRoom").change(function () {
+        var ad = $("#addr").val();
+        if ($("#selectCampus").val()=="1") {
+            ad = "望江" + $("#selectBuilding").val() + " " + $("#selectRoom").val();
+        }
+        else if($("#selectCampus").val()=="2"){
+            ad = "华西" + $("#selectBuilding").val() + " " + $("#selectRoom").val();
+        }
+        else if($("#selectCampus").val()=="3"){
+            ad = "江安" + $("#selectBuilding").val() + " " + $("#selectRoom").val();
+        }
+        $("#addr").val(ad);
+    });
+
+    function clickTcr(_this) {
+        var lenTcr = [[${#lists.size(teachers)}]];
+        if($(_this).is(':checked')){
+            $("#tchId").val("");
+            for (var i = 0; i < lenTcr; i++) {
+                if ($("input[name='tcrCheckbox']").eq(i).is(':checked')) {
+                    var tcr=$("input[name='tcrCheckbox']").eq(i).val()
+                    $("#tchId").val(tcr);
+                } else {
+                    $("input[name='tcrCheckbox']").eq(i).attr("disabled",true);
+                }
+            }
+        }
+        else {
+            $("#tchId").val("");
+            for (var i = 0; i < lenTcr; i++) {
+                $("input[name='tcrCheckbox']").eq(i).attr("disabled",false);
+            }
+        }
+
+    }
+
+    function clickCrs(_this) {
+        var lenCrs = [[${#lists.size(courses)}]];
+        if($(_this).is(':checked')){
+            $("#crsId").val("");
+            for (var i = 0; i < lenCrs; i++) {
+                if ($("input[name='crsCheckbox']").eq(i).is(':checked')) {
+                    var crs=$("input[name='crsCheckbox']").eq(i).val();
+                    $("#crsId").val(crs);
+                } else {
+                    $("input[name='crsCheckbox']").eq(i).attr("disabled",true);
+                }
+            }
+        }
+        else {
+            $("#crsId").val("");
+            for (var i = 0; i < lenCrs; i++) {
+                $("input[name='crsCheckbox']").eq(i).attr("disabled",false);
+            }
+        }
+
+    }
+
+    $("#submitTcr").click(function () {
+        $("#teacherModal").modal('hide');
+    });
+    $("#submitCrs").click(function () {
+        $("#courseModal").modal('hide');
+    });
+</script>
+<script th:src="@{/asserts/js/bootstrap.min.js}"></script>
+<script th:src="@{/asserts/js/theme.js}"></script>
+<div style="display:none"><script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script></div>
+</body>
+</html>

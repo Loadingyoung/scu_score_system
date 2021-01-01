@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="common/info::info-head"></div>
+<body>
+<!-- navbar -->
+<div th:replace="common/tcr-bar::topbar"></div>
+<!-- end navbar -->
+
+<div th:replace="common/tcr-bar::sidebar(activeUrl='profile')"></div>
+<!-- main container .wide-content is used for this layout without sidebar :)  -->
+<div class="content">
+    <div class="container-fluid">
+        <div class="settings-wrapper" id="pad-wrapper">
+
+            <!-- edit form column -->
+            <div class="span10 personal-info">
+                <h5 class="personal-title">我的信息</h5>
+
+                <form method="post" id="fm"/>
+                <div class="field-box">
+                    <label>工号:</label>
+                    <input name="teacherId" class="span5 inline-input" type="hidden" id="Id"/>
+                    <input name="teacherId_d" class="span5 inline-input" type="text" disabled/>
+                </div>
+                <div class="field-box">
+                    <label>姓名:</label>
+                    <input name="teacherName" class="span5 inline-input" type="hidden"/>
+                    <input name="teacherName_d" class="span5 inline-input" type="text" disabled/>
+                </div>
+                <div class="field-box">
+                    <label>性别:</label>
+                    <input name="teacherGender" class="span5 inline-input" type="hidden"/>
+                    <input name="teacherGender_d" class="span5 inline-input" type="text" disabled/>
+                </div>
+                <div class="field-box">
+                    <label>学院:</label>
+                    <input name="teacherDepartment" class="span5 inline-input" type="hidden"/>
+                    <input name="teacherDepartment_d" class="span5 inline-input" type="text" disabled/>
+                </div>
+                <div class="field-box">
+                    <label>职称:</label>
+                    <input name="teacherTitle" class="span5 inline-input" type="hidden"/>
+                    <input name="teacherTitle_d" class="span5 inline-input" type="text" disabled/>
+                </div>
+                <div class="field-box">
+                    <label>联系电话:</label>
+                    <input name="teacherTelephone" class="span5 inline-input" type="text"/>
+                </div>
+                <div class="field-box">
+                    <label>电子邮箱:</label>
+                    <input name="teacherEmail" class="span5 inline-input" type="text"/>
+                </div>
+                <div class="field-box">
+                    <label>旧密码:</label>
+                    <input class="span5 inline-input" type="password" id="oldPasswd"/>
+                    <span style="color: red" id="oldSpan"></span>
+                </div>
+                <div class="field-box">
+                    <label>新密码:</label>
+                    <input class="span5 inline-input" type="password" id="newPasswd"/>
+                    <span style="color: red" id="newSpan"></span>
+                </div>
+                <div class="field-box">
+                    <label>确认密码:</label>
+                    <input name="teacherPasswd" class="span5 inline-input" type="password" id="confirmPasswd"/>
+                    <span style="color: red" id="confSpan"></span>
+                </div>
+                <div class="span6 field-box actions">
+                    <input id="sbm" type="submit" class="btn-glow primary" value="保存修改" onclick="submitdelay()"/>
+                    <span>或</span>
+                    <input type="reset" value="重置" class="reset"/>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end main container -->
+
+
+<!-- scripts -->
+<script th:src="@{/asserts/js/jquery.js}"></script>
+<script th:inline="javascript">
+    $("#oldPasswd").change(function () {
+        var oldpswd = $("#oldPasswd").val();
+        var id=$("#Id").val();
+        if (oldpswd==null) {
+            return;
+        }
+        $.ajax({
+            cache: true,
+            type: "get",
+            url: "/getTcrPswd",
+            data: {"tid": id, "pswd": oldpswd},
+            success: function (data) {
+                if (!data){
+                    $("#sbm").attr("disabled",true);
+                    $("#oldSpan").text("旧密码输入错误！");
+                }
+                else {
+                    $("#sbm").attr("disabled",false);
+                    $("#oldSpan").text("");
+                }
+            }
+        });
+    });
+    $("#newPasswd").change(function () {
+        var id=$("#Id").val();
+        var name=$("#Name").val();
+        $("#adminId").val(id);
+        $("#adminName").val(name);
+        var oldpswd = $("#oldPasswd").val();
+        var newpswd = $("#newPasswd").val();
+        var  os = $("#oldSpan").text();
+        if (oldpswd === newpswd) {
+            if(os !== ""){
+                $("#sbm").attr("disabled",true);
+            }
+            else {
+                $("#sbm").attr("disabled",false);
+            }
+            $("#newSpan").text("新旧密码相同！");
+        }
+        else {
+            if(os !== ""){
+                $("#sbm").attr("disabled",true);
+            }
+            else {
+                $("#sbm").attr("disabled",false);
+            }
+            $("#newSpan").text("");
+        }
+    });
+    $("#confirmPasswd").change(function () {
+        var newpswd = $("#newPasswd").val();
+        var confpswd = $("#confirmPasswd").val();
+        var  os = $("#oldSpan").text();
+        if (confpswd !== newpswd) {
+            $("#sbm").attr("disabled",true);
+            $("#confSpan").text("两次密码输入不一致！");
+        }
+        else {
+            $("#sbm").attr("disabled",false);
+            $("#confSpan").text("");
+            if(os !== ""){
+                $("#sbm").attr("disabled",true);
+            }
+            else {
+                $("#sbm").attr("disabled",false);
+            }
+        }
+    });
+    function submitdelay(){
+        if($("#confirmPasswd").val()===""){
+            $("#fm").attr("action","/teacher/update-info");
+            alert("信息修改成功！");
+        }
+        else {
+            $("#fm").attr("action","/teacher/update-passwd");
+            alert("密码修改成功，请重新登录！");
+        }
+    }
+    $(document).ready(function (){
+        var tid=$("#tcrId").val();
+        $.ajax({
+            cache: true,
+            type: "get",
+            url: "/getTcr",
+            data: {"tid": tid},
+            success: function (data) {
+                $("input[name='teacherId']").val(data["teacherId"]);
+                $("input[name='teacherId_d']").val(data["teacherId"]);
+                $("input[name='teacherName']").val(data["teacherName"]);
+                $("input[name='teacherName_d']").val(data["teacherName"]);
+                $("input[name='teacherGender']").val(data["teacherGender"]);
+                $("input[name='teacherGender_d']").val(data["teacherGender"]);
+                $("input[name='teacherDepartment']").val(data["teacherDepartment"]);
+                $("input[name='teacherDepartment_d']").val(data["teacherDepartment"]);
+                $("input[name='teacherTitle']").val(data["teacherTitle"]);
+                $("input[name='teacherTitle_d']").val(data["teacherTitle"]);
+                $("input[name='teacherTelephone']").val(data["teacherTelephone"]);
+                $("input[name='teacherEmail']").val(data["teacherEmail"]);
+            }
+        });
+    });
+</script>
+<script th:src="@{/asserts/js/bootstrap.min.js}"></script>
+<script th:src="@{/asserts/js/theme.js}"></script>
+<div style="display:none">
+    <script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script>
+</div>
+</body>
+</html>

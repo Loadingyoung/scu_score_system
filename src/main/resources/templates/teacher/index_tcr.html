@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="common/index::index-head"></div>
+<body>
+
+<!-- navbar -->
+<div th:replace="common/tcr-bar::topbar"></div>
+<!-- end navbar -->
+
+<!-- sidebar -->
+<div th:replace="common/tcr-bar::sidebar(activeUrl='main')"></div>
+<!-- end sidebar -->
+
+
+<!-- main container -->
+<div class="content">
+
+
+    <div class="container-fluid">
+        <div style="margin-top: 300px;margin-bottom: 500px;font-size: 30px;text-align: center">
+            欢迎使用四川大学成绩管理系统！
+        </div>
+    </div>
+</div>
+
+
+<!-- scripts -->
+<script th:src="@{/asserts/js/jquery.js}"></script>
+<script th:src="@{/asserts/js/bootstrap.min.js}"></script>
+<script th:src="@{/asserts/js/jquery-ui-1.10.2.custom.min.js}"></script>
+<!-- knob -->
+<script th:src="@{/asserts/js/jquery.knob.js}"></script>
+<!-- flot charts -->
+<script th:src="@{/asserts/js/jquery.flot.js}"></script>
+<script th:src="@{/asserts/js/jquery.flot.stack.js}"></script>
+<script th:src="@{/asserts/js/jquery.flot.resize.js}"></script>
+<script th:src="@{/asserts/js/theme.js}"></script>
+
+
+<div style="display:none">
+    <script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script>
+</div>
+</body>
+</html>

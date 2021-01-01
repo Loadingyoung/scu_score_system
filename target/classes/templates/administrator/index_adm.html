@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="common/index::index-head"></div>
+<body>
+
+<!-- navbar -->
+<div th:replace="common/admin-bar::topbar"></div>
+<!-- end navbar -->
+
+<!-- sidebar -->
+<div th:replace="common/admin-bar::sidebar(activeUrl='main')"></div>
+<!-- end sidebar -->
+
+
+<!-- main container -->
+<div class="content">
+
+
+    <div class="container-fluid">
+
+        <!-- upper main stats -->
+        <div id="main-stats">
+            <div class="row-fluid stats-row">
+                <div class="span3 stat">
+                    <div class="data">
+                        <span class="number" th:text="${totalStus}"></span>
+                        学生总数
+                    </div>
+                </div>
+                <div class="span3 stat">
+                    <div class="data">
+                        <span class="number" th:text="${totalTcrs}"></span>
+                        教师总数
+                    </div>
+                </div>
+                <div class="span3 stat">
+                    <div class="data">
+                        <span class="number" th:text="${totalCrses}"></span>
+                        课程总数
+                    </div>
+                </div>
+                <div class="span3 stat last">
+                    <div class="data">
+                        <span class="number" th:text="${totalAdmins}"></span>
+                        管理员总数
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end upper main stats -->
+
+        <div id="pad-wrapper">
+            <div style="margin-top: 300px;margin-bottom: 500px;font-size: 30px;text-align: center">
+                欢迎使用四川大学成绩管理系统！
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- scripts -->
+<script th:src="@{http://code.jquery.com/jquery-latest.js}"></script>
+<script th:src="@{/asserts/js/bootstrap.min.js}"></script>
+<script th:src="@{/asserts/js/jquery-ui-1.10.2.custom.min.js}"></script>
+<!-- knob -->
+<script th:src="@{/asserts/js/jquery.knob.js}"></script>
+<!-- flot charts -->
+<script th:src="@{/asserts/js/jquery.flot.js}"></script>
+<script th:src="@{/asserts/js/jquery.flot.stack.js}"></script>
+<script th:src="@{/asserts/js/jquery.flot.resize.js}"></script>
+<script th:src="@{/asserts/js/theme.js}"></script>
+
+
+<div style="display:none">
+    <script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script>
+</div>
+</body>
+</html>

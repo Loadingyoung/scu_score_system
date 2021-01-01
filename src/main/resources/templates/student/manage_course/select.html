@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="common/tables::table-head(${'选课管理'})"></div>
+<body>
+
+<!-- navbar -->
+<div th:replace="common/stu-bar::topbar"></div>
+<!-- end navbar -->
+
+<!-- sidebar -->
+<div th:replace="common/stu-bar::sidebar(activeUrl='select-course')"></div>
+<!-- end sidebar -->
+
+
+<!-- main container -->
+<div class="content">
+    <div class="container-fluid">
+        <div id="pad-wrapper">
+            <!-- products table-->
+            <!-- the script for the toggle all checkboxes from header is located in js/theme.js -->
+            <div class="table-wrapper products-table section">
+                <div class="row-fluid head">
+                    <div class="span12">
+                        <h4>全校开课名单</h4>
+                    </div>
+                </div>
+
+                <div class="row-fluid filter-block">
+                    <form class="pull-right" >
+                        <input type="text" class="search" />
+                        <input class="btn-flat success new-product" type="button" value="提交选课" onclick="submitSc()"/>
+                    </form>
+                </div>
+
+                <div class="row-fluid">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th style="width: auto">
+                                选择
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>开课学院
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>课程号
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>课序号
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>课程名
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>课程类型
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>学分
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>考试类型
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>授课教师
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>选课限制
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>课余量
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>上课时间
+                            </th>
+                            <th class="span3">
+                                <span class="line"></span>上课地点
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbody">
+                        <!-- row -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- end products table -->
+
+        </div>
+    </div>
+</div>
+<!-- end main container -->
+
+<!-- scripts -->
+<script th:src="@{/asserts/js/jquery.js}"></script>
+<script th:inline="javascript">
+    $(document).ready(function (){
+        var stuId =$("#stuId").val();
+        $.ajax({
+            cache: true,
+            type: "get",
+            url: "/stuCanSelectCourse",
+            data: {
+                "stuId": stuId
+            },
+            success: function (data){
+                var size= data[0].length;
+                for (var i = 0;i<size;i++){
+                    var row="<td>" +
+                        data[1][i][0]+
+                        "</td><td>" +
+                        data[1][i][1]+
+                        "</td><td>" +
+                        data[1][i][2]+
+                        "</td><td>" +
+                        data[1][i][3]+
+                        "</td><td>" +
+                        data[1][i][4]+
+                        "</td><td>" +
+                        data[1][i][5]+
+                        "</td><td>" +
+                        data[1][i][6]+
+                        "</td><td>" +
+                        data[1][i][7]+
+                        "</td><td>" +
+                        data[1][i][8]+
+                        "</td><td>" +
+                        data[1][i][9]+
+                        "</td><td>" +
+                        data[1][i][10]+
+                        "</td><td>" +
+                        data[1][i][11]+
+                        "</td></tr>";
+                    if(data[0][size-1-i][0]===true && parseInt(data[1][i][9])>0){
+                        var chcbox="<tr><td><input type=\"checkbox\" value=\""+ data[1][i][1] + "_" + data[1][i][2] +"_"+data[1][i][12]+"\" style=\"margin-top: 0px\" onclick='selectRes(this)'/></td>";
+                    }
+                    else {
+                        var chcbox="<tr><td><input type=\"checkbox\" value=\""+ data[1][i][1] + "_" + data[1][i][2] +"_"+data[1][i][12]+ "\" style=\"margin-top: 0px\" disabled onclick='selectRes(this)'/></td>";
+                    }
+                    $("#tbody").append(chcbox+row);
+                }
+            }
+        });
+    });
+    function submitSc(){
+        var stuId = $("#stuId").val();
+        var lenCheck=$("input[type='checkbox']").length;
+        var chk="";
+        for (var i=0;i<lenCheck;i++){
+            if($("input[type='checkbox']").eq(i).is(':checked')){
+                chk+=$("input[type='checkbox']").eq(i).val()+"_";
+            }
+        }
+        $.ajax({
+            cache: true,
+            type: "get",
+            url: "/SelectCourse",
+            data: {
+                "stuId": stuId,
+                "chk": chk
+            },
+            success: function (data){
+                alert("选课成功！");
+                window.location.reload();
+            }
+        });
+    }
+    function selectRes(_this){
+        const cvar = $(_this).val();
+        const cID =cvar.split("_")[0];
+        const lenCheck = $("input[type='checkbox']").length;
+        for (var i=0;i<lenCheck;i++){
+            const chkvar = $("input[type='checkbox']").eq(i).val();
+            const chkID = chkvar.split("_")[0];
+            if(cvar !==chkvar && cID === chkID){
+                if($(_this).is(':checked')){
+                    $("input[type='checkbox']").eq(i).attr("disabled",true);
+                }
+                else {
+                    $("input[type='checkbox']").eq(i).attr("disabled",false);
+                }
+            }
+        }
+    }
+</script>
+<script th:src="@{/asserts/js/bootstrap.min.js}"></script>
+<script th:src="@{/asserts/js/theme.js}"></script>
+<div style="display:none"><script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script></div>
+</body>
+</html>

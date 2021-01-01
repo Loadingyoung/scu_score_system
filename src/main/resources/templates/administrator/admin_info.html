@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="common/info::info-head"></div>
+<body>
+<!-- navbar -->
+<div th:replace="common/admin-bar::topbar"></div>
+<!-- end navbar -->
+
+<div th:replace="common/admin-bar::sidebar(activeUrl='profile')"></div>
+<!-- main container .wide-content is used for this layout without sidebar :)  -->
+<div class="content">
+    <div class="container-fluid">
+        <div class="settings-wrapper" id="pad-wrapper">
+
+            <!-- edit form column -->
+            <div class="span10 personal-info">
+                <h5 class="personal-title">修改密码</h5>
+
+                <form th:action="@{/admin/update-passwd}" method="post"/>
+                <input name="adminId" id="adminId" type="hidden">
+                <input name="adminName" id="adminName" type="hidden">
+                <div class="field-box">
+                    <label>旧密码:</label>
+                    <input class="span5 inline-input" type="password" id="oldPasswd"/>
+                    <span style="color: red" id="oldSpan"></span>
+                </div>
+                <div class="field-box">
+                    <label>新密码:</label>
+                    <input class="span5 inline-input" type="password" id="newPasswd"/>
+                    <span style="color: red" id="newSpan"></span>
+                </div>
+                <div class="field-box">
+                    <label>确认密码:</label>
+                    <input name="adminPasswd" class="span5 inline-input" type="password" id="confirmPasswd"/>
+                    <span style="color: red" id="confSpan"></span>
+                </div>
+                <div class="span6 field-box actions">
+                    <input id="sbm" type="submit" class="btn-glow primary" value="保存修改" onclick="submitdelay()"/>
+                    <span>或</span>
+                    <input type="reset" value="重置" class="reset"/>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end main container -->
+
+
+<!-- scripts -->
+<script th:src="@{/asserts/js/jquery.js}"></script>
+<script th:inline="javascript">
+    $("#oldPasswd").change(function () {
+        var oldpswd = $("#oldPasswd").val();
+        var id=$("#Id").val();
+        if (oldpswd==null) {
+            return;
+        }
+        $.ajax({
+            cache: true,
+            type: "get",
+            url: "/getAdminPswd",
+            data: {"aid": id, "pswd": oldpswd},
+            success: function (data) {
+                if (!data){
+                    $("#oldSpan").text("旧密码输入错误！");
+                }
+                else {
+                    $("#oldSpan").text("");
+                }
+            }
+        });
+    });
+    $("#newPasswd").change(function () {
+        var id=$("#Id").val();
+        var name=$("#Name").val();
+        $("#adminId").val(id);
+        $("#adminName").val(name);
+        var oldpswd = $("#oldPasswd").val();
+        var newpswd = $("#newPasswd").val();
+        if (oldpswd == newpswd) {
+            $("#newSpan").text("新旧密码相同！");
+        }
+        else {
+            $("#newSpan").text("");
+        }
+    });
+    $("#confirmPasswd").change(function () {
+        var newpswd = $("#newPasswd").val();
+        var confpswd = $("#confirmPasswd").val();
+        if (confpswd != newpswd) {
+            $("#confSpan").text("两次密码输入不一致！");
+        }
+        else {
+            $("#confSpan").text("");
+        }
+    });
+    function submitdelay(){
+        alert("密码修改成功，请重新登录！");
+    }
+
+</script>
+<script th:src="@{/asserts/js/bootstrap.min.js}"></script>
+<script th:src="@{/asserts/js/theme.js}"></script>
+<div style="display:none">
+    <script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script>
+</div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" class="login-bg" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="login-head(user)">
+	<title>[[${user+'登录'}]]</title>
+    
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	
+    <!-- bootstrap -->
+    <link th:href="@{/asserts/css/bootstrap/bootstrap.css}" rel="stylesheet" />
+    <link th:href="@{/asserts/css/bootstrap/bootstrap-responsive.css}" rel="stylesheet" />
+    <link th:href="@{/asserts/css/bootstrap/bootstrap-overrides.css}" type="text/css" rel="stylesheet" />
+
+    <!-- global styles -->
+    <link rel="stylesheet" type="text/css" th:href="@{/asserts/css/layout.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/asserts/css/elements.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/asserts/css/icons.css}" />
+
+    <!-- libraries -->
+    <link rel="stylesheet" type="text/css" th:href="@{/asserts/css/lib/font-awesome.css}" />
+    
+    <!-- this page specific styles -->
+    <link rel="stylesheet" th:href="@{/asserts/css/compiled/signin.css}" type="text/css" media="screen" />
+
+    <!-- open sans font -->
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,800italic,400,300,600,700,800" rel='stylesheet' type='text/css' />
+
+    <!--[if lt IE 9]>
+      <script th:src="@{http://html5shim.googlecode.com/svn/trunk/html5.js}"></script>
+    <![endif]-->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body th:fragment="login-body(user,idname,idtype,pswdname,pswdtype)">
+    <form th:action="${'/'+idname+'/login'}" method="post">
+        <div class="row-fluid login-wrapper">
+            <div style="margin-top: 100px;margin-bottom: 30px;font-size: 24px;font-weight: bold">四川大学成绩管理系统</div>
+            <div class="span4 box">
+                <div class="content-wrap">
+                    <h6>[[${user+'登录'}]]</h6>
+                    <p style="color: red" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>
+                    <input class="span12" th:name="${idname}" type="text" th:placeholder="${'请输入您的'+idtype}" onfocus="this.placeholder=''" onblur="placeholder=phid()" />
+                    <input class="span12" th:name="${pswdname}" type="password" th:placeholder="${'请输入您的'+pswdtype}" onfocus="this.placeholder=''" onblur="placeholder=phpswd()"/>
+                    <button class="btn-glow primary login" type="submit">登录</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+	<!-- scripts -->
+    <script th:src="@{/asserts/js/jquery.js}"></script>
+    <script th:inline="javascript">
+        function phid(){
+            this.placeholder='请输入您的'+[[${idtype}]];
+            return this.placeholder;
+        }
+        function phpswd(){
+            this.placeholder='请输入您的'+[[${pswdtype}]];
+            return this.placeholder;
+        }
+    </script>
+    <script th:src="@{/asserts/js/bootstrap.min.js}"></script>
+    <script th:src="@{/asserts/js/theme.js}"></script>
+
+<div style="display:none"><script src="http://v7.cnzz.com/stat.php?id=155540&web_id=155540" language='JavaScript' charset='gb2312'></script></div>
+</body>
+</html>
